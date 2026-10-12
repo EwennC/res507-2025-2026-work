@@ -10,7 +10,6 @@ export async function buildApp() {
 
   // Register plugins
   if (process.env.NODE_ENV === "test") {
-    // Fake pg client for tests
     app.decorate("pg", {
       query: async () => ({ rows: [] })
     });
