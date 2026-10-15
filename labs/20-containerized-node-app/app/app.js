@@ -5,10 +5,8 @@ import handlebars from "handlebars";
 import postgres from "@fastify/postgres";
 
 export async function buildApp() {
-  // Create Fastify instance
   const app = Fastify({ logger: true });
 
-  // Register plugins
   if (process.env.NODE_ENV === "test") {
     app.decorate("pg", {
       query: async () => ({ rows: [] })
@@ -26,10 +24,8 @@ export async function buildApp() {
     root: new URL("./views/", import.meta.url).pathname
   });
 
-  // Health check endpoint
   app.get("/health", async () => ({ ok: true }));
 
-  // Get all quotes endpoint
   app.get("/", async (_req, reply) => {
     const result = await app.pg.query("SELECT * FROM quotes");
     const quotes = result.rows;
@@ -37,7 +33,6 @@ export async function buildApp() {
     return reply.view("index.hbs", { quotes });
   });
 
-  // Post new quote endpoint
   app.post("/quotes", async (req, reply) => {
     const author = (req.body?.author ?? "").trim();
     const text = (req.body?.text ?? "").trim();
